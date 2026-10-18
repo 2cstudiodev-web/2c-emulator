@@ -328,9 +328,11 @@ class LemuroidLibrary(
         game: Game,
         dataFiles: List<DataFile>,
         allowVirtualFiles: Boolean,
+        useFileDescriptorPath: Boolean = false,
     ): RomFiles {
         val provider = storageProviderRegistry.get()
-        return provider.getProvider(game).getGameRomFiles(game, dataFiles, allowVirtualFiles)
+        return provider.getProvider(game)
+            .getGameRomFiles(game, dataFiles, allowVirtualFiles, useFileDescriptorPath)
     }
 
     private sealed class ScanEntry {

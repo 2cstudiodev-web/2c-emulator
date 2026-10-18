@@ -21,26 +21,6 @@ object SerialScanner {
     private val MAGIC_NUMBERS =
         listOf(
             MagicNumber(
-                0x0010,
-                ubyteArrayOf(
-                    0x53U,
-                    0x45U,
-                    0x47U,
-                    0x41U,
-                    0x44U,
-                    0x49U,
-                    0x53U,
-                    0x43U,
-                    0x53U,
-                    0x59U,
-                    0x53U,
-                    0x54U,
-                    0x45U,
-                    0x4dU,
-                ).toByteArray(),
-                SystemID.SEGACD,
-            ),
-            MagicNumber(
                 0x8008,
                 ubyteArrayOf(
                     0x50U,
@@ -81,12 +61,15 @@ object SerialScanner {
             ),
         )
 
-    private val SEGA_CD_REGEX = Regex("([A-Z]+)?-?([0-9]+) ?-?([0-9]*)")
-
     private val PS_SERIAL_REGEX = Regex("^([A-Z]+)-?([0-9]+)")
     private val PS_SERIAL_REGEX2 = Regex("^([A-Z]+)_?([0-9]{3})\\.([0-9]{2})")
 
     private const val PS_SERIAL_MAX_SIZE = 12
+
+    private const val ISO_VOLUME_SPACE_SIZE_OFFSET = 0x8050
+
+    // An 80 minute CD holds 360,000 sectors; leave some margin for overburned discs.
+    private const val CD_MAX_BLOCKS = 405_000L
 
     private val PSX_BASE_SERIALS =
         listOf(
@@ -172,12 +155,8 @@ object SerialScanner {
         openedStream.reset()
 
         return when (detectedSystem) {
-            SystemID.SEGACD ->
-                runCatching { extractInfoForSegaCD(openedStream) }
-                    .getOrDefault(DiskInfo(null, SystemID.SEGACD))
-
             SystemID.PSX ->
-                runCatching { extractInfoForPSX(openedStream) }
+                runCatching { extractInfoForPSX(openedStream, isDvdSized(header)) }
                     .getOrDefault(DiskInfo(null, SystemID.PSX))
 
             SystemID.PSP ->
@@ -201,58 +180,49 @@ object SerialScanner {
         return DiskInfo(rawSerial, SystemID.NINTENDO_3DS)
     }
 
-    private fun extractInfoForSegaCD(openedStream: InputStream): DiskInfo {
-        Timber.d("Parsing SegaCD game")
-        openedStream.mark(20000)
-        openedStream.skip(0x193)
-
-        val rawSerial = String(readByteArray(openedStream, ByteArray(16)), Charsets.US_ASCII)
-
-        Timber.d("Detected SegaCD raw serial read: $rawSerial")
-
-        openedStream.reset()
-        openedStream.skip(0x200)
-
-        val regionID = String(readByteArray(openedStream, ByteArray(1)), Charsets.US_ASCII)
-
-        Timber.d("Detected SegaCD region: $regionID")
-
-        val groups = SEGA_CD_REGEX.find(rawSerial)?.groupValues
-
-        // The following rules come from here: https://github.com/libretro/RetroArch/pull/11719/files
-        // and some guess work. They are by no means complete.
-        val prefix = groups?.get(1)
-        val num = groups?.get(2)
-        var postfix = groups?.get(3)
-
-        if (regionID == "E") {
-            postfix = "50"
-        }
-
-        if (postfix == "00") {
-            postfix = null
-        }
-
-        val finalSerial =
-            sequenceOf(prefix, num, postfix)
-                .filterNotNull()
-                .filter { it.isNotBlank() }
-                .joinToString("-") { it.trim() }
-
-        Timber.i("SegaCD final serial: $finalSerial")
-        return DiskInfo(finalSerial, SystemID.SEGACD)
-    }
-
-    private fun extractInfoForPSX(openedStream: InputStream): DiskInfo {
+    private fun extractInfoForPSX(
+        openedStream: InputStream,
+        isDvdSized: Boolean,
+    ): DiskInfo {
+        val fallbackSystem = if (isDvdSized) SystemID.PS2 else SystemID.PSX
         val headerSize = 64.kiloBytes()
         if (openedStream.available() < headerSize) {
-            return DiskInfo(null, null)
+            return DiskInfo(null, fallbackSystem)
         }
 
         return textSearch(PSX_BASE_SERIALS, openedStream, PS_SERIAL_MAX_SIZE, headerSize)
             .mapNotNull { serial -> parsePSXSerial(serial) }
-            .mapNotNull { serial -> DiskInfo(serial, SystemID.PSX) }
-            .firstOrNull() ?: DiskInfo(null, SystemID.PSX)
+            .mapNotNull { serial ->
+                val system = if (isDvdSized || isPS2Serial(serial)) SystemID.PS2 else SystemID.PSX
+                DiskInfo(serial, system)
+            }
+            .firstOrNull() ?: DiskInfo(null, fallbackSystem)
+    }
+
+    /** PS1 games ship on CDs, so an ISO 9660 volume larger than a CD can only be a PS2 DVD. */
+    private fun isDvdSized(header: ByteArray): Boolean {
+        val offset = ISO_VOLUME_SPACE_SIZE_OFFSET
+        if (header.size < offset + 4) return false
+        val blocks =
+            (header[offset].toLong() and 0xFF) or
+                ((header[offset + 1].toLong() and 0xFF) shl 8) or
+                ((header[offset + 2].toLong() and 0xFF) shl 16) or
+                ((header[offset + 3].toLong() and 0xFF) shl 24)
+        return blocks > CD_MAX_BLOCKS
+    }
+
+    /** PS2 titles reuse PS1 serial prefixes, but with distinct number ranges. */
+    private fun isPS2Serial(serial: String): Boolean {
+        val prefix = serial.substringBefore("-")
+        val number = serial.substringAfter("-", "")
+        return when (prefix) {
+            "SLUS", "SLPS", "SLKA", "SCAJ" -> number.startsWith("2")
+            "SCUS" -> number.startsWith("97")
+            "SLES", "SCES", "SCED" -> number.startsWith("5")
+            "SLPM" -> number.startsWith("6") || number.startsWith("5")
+            "SCPS" -> number.startsWith("5") || number.startsWith("11") || number.startsWith("15")
+            else -> false
+        }
     }
 
     private fun extractInfoForPSP(openedStream: InputStream): DiskInfo {

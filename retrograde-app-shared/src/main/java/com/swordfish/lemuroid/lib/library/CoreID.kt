@@ -21,15 +21,20 @@ enum class CoreID(
         "FCEUmm",
         "libfceumm_libretro_android.so",
     ),
-    SNES9X(
-        "snes9x",
-        "Snes9x",
-        "libsnes9x_libretro_android.so",
+    BSNES(
+        "bsnes",
+        "bsnes",
+        "libbsnes_libretro_android.so",
     ),
-    GENESIS_PLUS_GX(
-        "genesis_plus_gx",
-        "Genesis Plus GX",
-        "libgenesis_plus_gx_libretro_android.so",
+    BLASTEM(
+        "blastem",
+        "BlastEm",
+        "libblastem_libretro_android.so",
+    ),
+    GEARSYSTEM(
+        "gearsystem",
+        "Gearsystem",
+        "libgearsystem_libretro_android.so",
     ),
     GAMBATTE(
         "gambatte",
@@ -56,15 +61,10 @@ enum class CoreID(
         "PPSSPP",
         "libppsspp_libretro_android.so",
     ),
-    FBNEO(
-        "fbneo",
-        "FBNeo",
-        "libfbneo_libretro_android.so",
-    ),
-    MAME2003PLUS(
-        "mame2003_plus",
-        "MAME2003 Plus",
-        "libmame2003_plus_libretro_android.so",
+    MAME2016(
+        "mame2016",
+        "MAME 2016",
+        "libmame2016_libretro_android.so",
     ),
     DESMUME(
         "desmume",
@@ -105,6 +105,11 @@ enum class CoreID(
         "citra",
         "Citra",
         "libcitra_libretro_android.so",
+    ),
+    PLAY(
+        "play",
+        "Play!",
+        "libplay_libretro_android.so",
     ),
     DOSBOX_PURE(
         "dosbox_pure",

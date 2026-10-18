@@ -117,6 +117,7 @@ class LocalStorageProvider(
         game: Game,
         dataFiles: List<DataFile>,
         allowVirtualFiles: Boolean,
+        useFileDescriptorPath: Boolean,
     ): RomFiles {
         return RomFiles.Standard(listOf(getGameRom(game)) + dataFiles.map { getDataFile(it) })
     }

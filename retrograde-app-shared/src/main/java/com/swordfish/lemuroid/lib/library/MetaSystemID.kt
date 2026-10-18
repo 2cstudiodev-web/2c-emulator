@@ -21,7 +21,7 @@ enum class MetaSystemID(val titleResId: Int, val imageResId: Int, val systemIDs:
     GENESIS(
         R.string.game_system_title_genesis,
         R.drawable.game_system_genesis,
-        listOf(SystemID.GENESIS, SystemID.SEGACD),
+        listOf(SystemID.GENESIS),
     ),
     GB(
         R.string.game_system_title_gb,
@@ -73,10 +73,15 @@ enum class MetaSystemID(val titleResId: Int, val imageResId: Int, val systemIDs:
         R.drawable.game_system_psx,
         listOf(SystemID.PSX),
     ),
+    PS2(
+        R.string.game_system_title_ps2,
+        R.drawable.game_system_ps2,
+        listOf(SystemID.PS2),
+    ),
     ARCADE(
         R.string.game_system_title_arcade,
         R.drawable.game_system_arcade,
-        listOf(SystemID.FBNEO, SystemID.MAME2003PLUS),
+        listOf(SystemID.ARCADE),
     ),
     ATARI7800(
         R.string.game_system_title_atari7800,
@@ -122,20 +127,19 @@ enum class MetaSystemID(val titleResId: Int, val imageResId: Int, val systemIDs:
     companion object {
         fun fromSystemID(systemID: SystemID): MetaSystemID {
             return when (systemID) {
-                SystemID.FBNEO -> ARCADE
-                SystemID.MAME2003PLUS -> ARCADE
+                SystemID.ARCADE -> ARCADE
                 SystemID.ATARI2600 -> ATARI2600
                 SystemID.GB -> GB
                 SystemID.GBC -> GBC
                 SystemID.GBA -> GBA
                 SystemID.GENESIS -> GENESIS
-                SystemID.SEGACD -> GENESIS
                 SystemID.GG -> GG
                 SystemID.N64 -> N64
                 SystemID.NDS -> NDS
                 SystemID.NES -> NES
                 SystemID.PSP -> PSP
                 SystemID.PSX -> PSX
+                SystemID.PS2 -> PS2
                 SystemID.SMS -> SMS
                 SystemID.SNES -> SNES
                 SystemID.PC_ENGINE -> PC_ENGINE

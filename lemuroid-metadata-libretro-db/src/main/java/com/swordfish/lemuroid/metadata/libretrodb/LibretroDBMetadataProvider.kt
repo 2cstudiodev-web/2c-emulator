@@ -48,8 +48,8 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
         return metadata
     }
 
-    private fun convertToGameMetadata(rom: LibretroRom): GameMetadata {
-        val system = GameSystem.findById(rom.system!!)
+    private fun convertToGameMetadata(rom: LibretroRom): GameMetadata? {
+        val system = GameSystem.findByIdOrNull(rom.system) ?: return null
         return GameMetadata(
             name = rom.name,
             romName = rom.romName,
@@ -64,7 +64,7 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
         file: StorageFile,
     ): GameMetadata? {
         return db.gameDao().findByFileName(file.name)
-            .filterNullable { extractGameSystem(it).scanOptions.scanByFilename }
+            .filterNullable { extractGameSystem(it)?.scanOptions?.scanByFilename == true }
             ?.let { convertToGameMetadata(it) }
     }
 
@@ -73,8 +73,8 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
         file: StorageFile,
     ): GameMetadata? {
         return db.gameDao().findByFileName(file.name)
-            .filterNullable { extractGameSystem(it).scanOptions.scanByPathAndFilename }
-            .filterNullable { parentContainsSystem(file.path, extractGameSystem(it).id.dbname) }
+            .filterNullable { extractGameSystem(it)?.scanOptions?.scanByPathAndFilename == true }
+            .filterNullable { parentContainsSystem(file.path, extractGameSystem(it)!!.id.dbname) }
             ?.let { convertToGameMetadata(it) }
     }
 
@@ -155,8 +155,8 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
         return result
     }
 
-    private fun extractGameSystem(rom: LibretroRom): GameSystem {
-        return GameSystem.findById(rom.system!!)
+    private fun extractGameSystem(rom: LibretroRom): GameSystem? {
+        return GameSystem.findByIdOrNull(rom.system)
     }
 
     private fun computeCoverUrl(
@@ -164,11 +164,6 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
         name: String?,
     ): String? {
         var systemName = system.libretroFullName
-
-        // Specific mame version don't have any thumbnails in Libretro database
-        if (system.id == SystemID.MAME2003PLUS) {
-            systemName = "MAME"
-        }
 
         if (name == null) {
             return null

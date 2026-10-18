@@ -10,9 +10,18 @@ plugins {
 
 android {
     defaultConfig {
-        versionCode = 252
-        versionName = "1.17.0" // Always remember to update Cores Tag!
-        applicationId = "com.swordfish.lemuroid"
+        versionCode = 1
+        versionName = "0.1.0"
+        applicationId = "com.twocstudio.emulator"
+        ndk {
+            // PS2 emulation needs a 64-bit ARM device; we only ship that ABI.
+            abiFilters += "arm64-v8a"
+        }
+    }
+
+    sourceSets {
+        // Extra cores downloaded by extra-cores/fetch-cores.sh
+        getByName("main").jniLibs.srcDir("$rootDir/extra-cores/jniLibs")
     }
     flavorDimensions += listOf("opensource", "cores")
 
@@ -72,6 +81,14 @@ android {
             // Stripping created some issues with some libretro cores such as ppsspp
             keepDebugSymbols += setOf("*/*/*_libretro_android.so")
             useLegacyPackaging = true
+            // Upstream cores we replaced because of non-commercial licenses.
+            excludes +=
+                setOf(
+                    "**/libsnes9x_libretro_android.so",
+                    "**/libgenesis_plus_gx_libretro_android.so",
+                    "**/libfbneo_libretro_android.so",
+                    "**/libmame2003_plus_libretro_android.so",
+                )
         }
         resources {
             excludes += setOf("META-INF/DEPENDENCIES", "META-INF/library_release.kotlin_module")
@@ -96,12 +113,12 @@ android {
             isMinifyEnabled = true
             signingConfig = signingConfigs["release"]
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            resValue("string", "lemuroid_name", "Lemuroid")
+            resValue("string", "lemuroid_name", "2C Emulator")
         }
         getByName("debug") {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            resValue("string", "lemuroid_name", "LemuroiDebug")
+            resValue("string", "lemuroid_name", "2C Emulator Dev")
         }
     }
 

@@ -3,6 +3,7 @@ package com.swordfish.lemuroid.lib.storage.local
 import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.system.Os
 import androidx.documentfile.provider.DocumentFile
 import androidx.leanback.preference.LeanbackPreferenceFragment
 import com.swordfish.lemuroid.common.kotlin.extractEntryToFile
@@ -129,6 +130,7 @@ class StorageAccessFrameworkProvider(private val context: Context) : StorageProv
         game: Game,
         dataFiles: List<DataFile>,
         allowVirtualFiles: Boolean,
+        useFileDescriptorPath: Boolean,
     ): RomFiles {
         val originalDocumentUri = Uri.parse(game.fileUri)
         val originalDocument = DocumentFile.fromSingleUri(context, originalDocumentUri)!!
@@ -138,6 +140,10 @@ class StorageAccessFrameworkProvider(private val context: Context) : StorageProv
         return when {
             isZipped && dataFiles.isEmpty() -> getGameRomFilesZipped(game, originalDocument)
             allowVirtualFiles -> getGameRomFilesVirtual(game, dataFiles)
+            useFileDescriptorPath && dataFiles.isEmpty() ->
+                getGameRomFileDescriptorLink(game, originalDocument)
+                    ?.let { RomFiles.Standard(listOf(it)) }
+                    ?: getGameRomFilesStandard(game, dataFiles, originalDocument)
             else -> getGameRomFilesStandard(game, dataFiles, originalDocument)
         }
     }
@@ -228,12 +234,35 @@ class StorageAccessFrameworkProvider(private val context: Context) : StorageProv
         return cacheFile
     }
 
+    /**
+     * Disc images for newer systems can be several gigabytes, so instead of copying them into the
+     * cache we expose the open file descriptor through a symlink that keeps the original file name
+     * (cores pick the image format from the extension).
+     */
+    private fun getGameRomFileDescriptorLink(
+        game: Game,
+        originalDocument: DocumentFile,
+    ): File? {
+        return runCatching {
+            val descriptor = context.contentResolver.openFileDescriptor(originalDocument.uri, "r")!!
+            val fd = descriptor.detachFd()
+            val linksDirectory = File(context.cacheDir, FD_LINKS_SUBFOLDER).apply { mkdirs() }
+            val link = File(linksDirectory, game.fileName)
+            link.delete()
+            Os.symlink("/proc/self/fd/$fd", link.absolutePath)
+            link
+        }.onFailure {
+            Timber.e(it, "Unable to link file descriptor for ${game.fileName}, falling back to copy")
+        }.getOrNull()
+    }
+
     override fun getInputStream(uri: Uri): InputStream? {
         return context.contentResolver.openInputStream(uri)
     }
 
     companion object {
         const val SAF_CACHE_SUBFOLDER = "storage-framework-games"
+        const val FD_LINKS_SUBFOLDER = "storage-framework-fd-links"
         const val VIRTUAL_FILE_PATH = "/virtual/file/path"
     }
 }

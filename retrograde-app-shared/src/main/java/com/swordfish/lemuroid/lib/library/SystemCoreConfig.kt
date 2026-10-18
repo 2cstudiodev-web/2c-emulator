@@ -19,4 +19,6 @@ data class SystemCoreConfig(
     val skipDuplicateFrames: Boolean = true,
     val supportedOnlyArchitectures: Set<String>? = null,
     val supportsMicrophone: Boolean = false,
+    // Hand the core a symlink to /proc/self/fd/N instead of copying huge disc images to the cache.
+    val useFileDescriptorPath: Boolean = false,
 ) : Serializable

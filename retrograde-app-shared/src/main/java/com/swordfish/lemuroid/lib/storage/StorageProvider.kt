@@ -47,5 +47,6 @@ interface StorageProvider {
         game: Game,
         dataFiles: List<DataFile>,
         allowVirtualFiles: Boolean,
+        useFileDescriptorPath: Boolean = false,
     ): RomFiles
 }

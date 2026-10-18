@@ -94,7 +94,12 @@ class GameLoader(
                     runCatching {
                         val useVFS = systemCoreConfig.supportsLibretroVFS && directLoad
                         val dataFiles = retrogradeDatabase.dataFileDao().selectDataFilesForGame(game.id)
-                        lemuroidLibrary.getGameFiles(game, dataFiles, useVFS)
+                        lemuroidLibrary.getGameFiles(
+                            game,
+                            dataFiles,
+                            useVFS,
+                            systemCoreConfig.useFileDescriptorPath,
+                        )
                     }.getOrElse { throw it }
 
                 val saveRAM =

@@ -45,17 +45,16 @@ object ShaderChooser {
             SystemID.GB -> ShaderConfig.LCD
             SystemID.N64 -> ShaderConfig.CRT
             SystemID.GENESIS -> ShaderConfig.CRT
-            SystemID.SEGACD -> ShaderConfig.CRT
             SystemID.NES -> ShaderConfig.CRT
             SystemID.SNES -> ShaderConfig.CRT
-            SystemID.FBNEO -> ShaderConfig.CRT
+            SystemID.ARCADE -> ShaderConfig.CRT
             SystemID.SMS -> ShaderConfig.CRT
             SystemID.PSP -> ShaderConfig.LCD
             SystemID.NDS -> ShaderConfig.LCD
             SystemID.GG -> ShaderConfig.LCD
             SystemID.ATARI2600 -> ShaderConfig.CRT
             SystemID.PSX -> ShaderConfig.CRT
-            SystemID.MAME2003PLUS -> ShaderConfig.CRT
+            SystemID.PS2 -> ShaderConfig.Default
             SystemID.ATARI7800 -> ShaderConfig.CRT
             SystemID.PC_ENGINE -> ShaderConfig.CRT
             SystemID.LYNX -> ShaderConfig.LCD
@@ -268,17 +267,16 @@ object ShaderChooser {
             SystemID.GB -> upscale8BitsMobile
             SystemID.N64 -> upscale32Bits
             SystemID.GENESIS -> upscale16Bits
-            SystemID.SEGACD -> upscale16Bits
             SystemID.NES -> upscale8Bits
             SystemID.SNES -> upscale16Bits
-            SystemID.FBNEO -> upscale32Bits
+            SystemID.ARCADE -> upscale32Bits
             SystemID.SMS -> upscale8Bits
             SystemID.PSP -> modern
             SystemID.NDS -> upscale32Bits
             SystemID.GG -> upscale8BitsMobile
             SystemID.ATARI2600 -> upscale8Bits
             SystemID.PSX -> upscale32Bits
-            SystemID.MAME2003PLUS -> upscale32Bits
+            SystemID.PS2 -> modern
             SystemID.ATARI7800 -> upscale8Bits
             SystemID.PC_ENGINE -> upscale16Bits
             SystemID.LYNX -> upscale8BitsMobile

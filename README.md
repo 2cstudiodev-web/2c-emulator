@@ -1,61 +1,50 @@
-# Lemuroid
+# 2C Emulator
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/com.swordfish.lemuroid/)
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
-     alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=com.swordfish.lemuroid)
+Android retro game emulator by 2C Studio. Players load their **own** game files — the app ships
+no games, no BIOS files and no encryption keys.
 
-## Description
+Based on [Lemuroid](https://github.com/Swordfish90/Lemuroid) by Filippo Scognamiglio, licensed
+under the GNU GPL v3. 2C Emulator is distributed under the same license (see `COPYING`); the
+original upstream README is kept in `README.lemuroid.md`.
 
-Lemuroid is an open-source emulation project for Android based on Libretro. Its main goal is ease of use, good Android integration and a great user experience.
+## Supported systems and cores
 
-It originated from a rib of [Retrograde](https://github.com/retrograde/retrograde-android), but graduated to a standalone project integrating [LibretroDroid](https://github.com/Swordfish90/LibretroDroid).
+Only cores whose licenses allow commercial distribution are shipped.
 
-|Screen 1|Screen 2|Screen 3|
+| System | Core | License |
 |---|---|---|
-|![Screen1](https://github.com/Swordfish90/Lemuroid/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg)|![Screen2](https://github.com/Swordfish90/Lemuroid/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg)|![Screen3](https://github.com/Swordfish90/Lemuroid/blob/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg)|
+| NES | FCEUmm | GPLv2 |
+| SNES | bsnes | GPLv3 |
+| Game Boy / Color | Gambatte | GPLv2 |
+| Game Boy Advance | mGBA | MPL 2.0 |
+| Nintendo 64 | Mupen64Plus-Next | GPLv2 |
+| Nintendo DS | melonDS / DeSmuME | GPLv3 / GPLv2 |
+| Nintendo 3DS (beta, decrypted dumps only) | Citra | GPLv2+ |
+| Master System / Game Gear | Gearsystem | GPLv3 |
+| Mega Drive / Genesis | BlastEm | GPLv3 |
+| PlayStation | PCSX ReARMed | GPLv2 |
+| PlayStation 2 (beta) | Play! | MIT/BSD |
+| PSP | PPSSPP | GPLv2 |
+| Arcade | MAME 2016 | GPLv2+ |
+| Atari 2600 / 7800 / Lynx | Stella / ProSystem / Handy | GPLv2 / GPLv2 / Zlib |
+| PC Engine, Neo Geo Pocket, WonderSwan | Mednafen (Beetle) | GPLv2 |
+| DOS | DOSBox Pure | GPLv2 |
 
-### Supported Systems:
-- Atari 2600 (A26) ([stella](https://docs.libretro.com/library/stella/))
-- Atari 7800 (A78) ([prosystem](https://docs.libretro.com/library/prosystem/))
-- Atari Lynx (Lynx) ([handy](https://docs.libretro.com/library/handy/))
-- Nintendo (NES) ([fceumm](https://docs.libretro.com/library/fceumm/))
-- Super Nintendo (SNES) ([snes9x](https://docs.libretro.com/library/snes9x/))
-- Game Boy (GB) ([gambatte](https://docs.libretro.com/library/gambatte/))
-- Game Boy Color (GBC) ([gambatte](https://docs.libretro.com/library/gambatte/))
-- Game Boy Advance (GBA) ([mgba](https://docs.libretro.com/library/mgba/))
-- Sega Genesis (aka Megadrive) ([genesis_plus_gx](https://docs.libretro.com/library/genesis_plus_gx/))
-- Sega CD (aka Mega CD) ([genesis_plus_gx](https://docs.libretro.com/library/genesis_plus_gx/))
-- Sega Master System (SMS) ([genesis_plus_gx](https://docs.libretro.com/library/genesis_plus_gx/))
-- Sega Game Gear (GG) ([genesis_plus_gx](https://docs.libretro.com/library/genesis_plus_gx/))
-- Nintendo 64 (N64) ([mupen64plus](https://docs.libretro.com/library/mupen64plus/))
-- PlayStation (PSX) ([PCSX-ReARMed](https://docs.libretro.com/library/pcsx_rearmed/))
-- PlayStation Portable (PSP) ([ppsspp](https://docs.libretro.com/library/ppsspp/))
-- FinalBurn Neo (Arcade) ([fbneo](https://github.com/libretro/FBNeo/))
-- Nintendo DS (NDS) ([desmume](https://docs.libretro.com/library/desmume/)/[MelonDS](https://docs.libretro.com/library/melonds/))
-- NEC PC Engine (PCE) ([beetle_pce_fast](https://docs.libretro.com/library/beetle_pce_fast/))
-- Neo Geo Pocket (NGP) ([mednafen_ngp](https://docs.libretro.com/library/beetle_neopop/))
-- Neo Geo Pocket Color (NGC) ([mednafen_ngp](https://docs.libretro.com/library/beetle_neopop/))
-- WonderSwan (WS) ([beetle_cygne](https://docs.libretro.com/library/beetle_cygne/))
-- WonderSwan Color (WSC) ([beetle_cygne](https://docs.libretro.com/library/beetle_cygne/))
-- Nintendo 3DS (3DS) ([citra](https://docs.libretro.com/library/citra/))
+Removed from upstream because their licenses forbid commercial use: Snes9x, Genesis Plus GX,
+FBNeo, MAME 2003-Plus (and with them Sega CD support).
 
-### Features:
-- Android TV support
-- Automatically save and restore game states.
-- ROMs scanning and indexing
-- Optimized touch controls
-- Quick save/load
-- Support for Zipped ROMs
-- Display simulation (LCD/CRT)
-- Gamepad support
-- Local multiplayer
-- Tilt input
-- Customizable touch controls (size and position)
-- Cloud save sync
-- HD mode
+## Game folders
 
-### Languages:
-You can help translate Lemuroid in your native language by going here: https://crowdin.com/project/lemuroid
+Disc-based systems are detected from the folder name, so keep games in folders such as
+`psx/`, `ps2/`, `psp/` and `arcade/`. PS2 DVD images are also recognised automatically.
+PS2 emulation needs a recent 64-bit phone; Play! uses a high-level BIOS so no BIOS file is needed.
+
+## Building
+
+```bash
+./extra-cores/fetch-cores.sh          # bsnes, BlastEm, Gearsystem, MAME 2016, Play!
+git submodule update --init           # upstream lemuroid-cores
+./gradlew :lemuroid-app:assembleFreeBundleDebug
+```
+
+The APK targets `arm64-v8a` only.

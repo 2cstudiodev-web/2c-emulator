@@ -140,27 +140,6 @@ class BiosManager(private val directoriesManager: DirectoriesManager) {
                     "0D973C9D",
                 ),
                 Bios(
-                    "bios_CD_E.bin",
-                    "E66FA1DC5820D254611FDCDBA0662372",
-                    "Sega CD E",
-                    SystemID.SEGACD,
-                    "529AC15A",
-                ),
-                Bios(
-                    "bios_CD_J.bin",
-                    "278A9397D192149E84E820AC621A8EDD",
-                    "Sega CD J",
-                    SystemID.SEGACD,
-                    "9D2DA8F2",
-                ),
-                Bios(
-                    "bios_CD_U.bin",
-                    "2EFD74E3232FF260E371B99F84024F7F",
-                    "Sega CD U",
-                    SystemID.SEGACD,
-                    "C6D10268",
-                ),
-                Bios(
                     "bios7.bin",
                     "DF692A80A5B1BC90728BC3DFC76CD948",
                     "Nintendo DS ARM7",
