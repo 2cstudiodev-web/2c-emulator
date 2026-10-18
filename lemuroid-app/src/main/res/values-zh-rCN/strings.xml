@@ -102,6 +102,7 @@
     <string name="game_menu_edit_touch_controls">编辑触控按键</string>
     <string name="game_menu_mute_audio">静音</string>
     <string name="game_menu_fast_forward">快进</string>
+    <string name="game_menu_fast_forward_speed">快进倍速</string>
     <string name="game_menu_change_disk_disk">碟片 %1$s</string>
     <string name="game_menu_tilt_sensor">倾斜传感器</string>
     <string name="game_loading_preparing_game">正在准备游戏…</string>

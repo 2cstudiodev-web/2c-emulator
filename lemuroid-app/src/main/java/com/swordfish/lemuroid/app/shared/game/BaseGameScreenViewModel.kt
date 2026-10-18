@@ -38,16 +38,18 @@ import com.swordfish.touchinput.radial.sensors.TiltConfiguration
 import com.swordfish.touchinput.radial.settings.TouchControllerSettingsManager
 import gg.padkit.inputevents.InputEvent
 import gg.padkit.inputstate.InputState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class BaseGameScreenViewModel(
     private val appContext: Context,
     game: Game,
-    settingsManager: SettingsManager,
+    private val settingsManager: SettingsManager,
     inputDeviceManager: InputDeviceManager,
     controllerConfigsManager: ControllerConfigsManager,
     system: GameSystem,
@@ -268,10 +270,25 @@ class BaseGameScreenViewModel(
     }
 
     fun toggleFastForward() {
-        Timber.d("Loading quick save")
-        retroGameView.retroGameView?.apply {
-            frameSpeed = if (frameSpeed == 1) 2 else 1
+        Timber.d("Toggling fast-forward")
+        viewModelScope.launch {
+            val enabled = (retroGameView.retroGameView?.frameSpeed ?: 1) > 1
+            applyFastForward(!enabled)
         }
+    }
+
+    /**
+     * Turns fast-forward on or off (or keeps its state when [enabled] is null) using the speed
+     * chosen in the game menu.
+     */
+    suspend fun applyFastForward(enabled: Boolean?) {
+        val view = retroGameView.retroGameView ?: return
+        val shouldEnable = enabled ?: (view.frameSpeed > 1)
+        val speed = if (shouldEnable) settingsManager.fastForwardSpeed() else 1
+        withContext(Dispatchers.Main) {
+            view.frameSpeed = speed
+        }
+        Timber.i("Fast-forward speed set to ${speed}x")
     }
 
     suspend fun reset() =

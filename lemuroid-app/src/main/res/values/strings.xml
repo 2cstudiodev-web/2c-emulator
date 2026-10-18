@@ -131,6 +131,8 @@
     <string name="game_menu_edit_touch_controls">Edit Controls</string>
     <string name="game_menu_mute_audio">Mute</string>
     <string name="game_menu_fast_forward">Fast-Forward</string>
+    <string name="game_menu_fast_forward_speed">Fast-Forward speed</string>
+    <string name="game_menu_fast_forward_speed_value">%1$dx</string>
     <string name="game_menu_change_disk_disk">Disk %1$s</string>
     <string name="game_menu_tilt_sensor">Tilt Sensor</string>
 

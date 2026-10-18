@@ -396,15 +396,15 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                         )
                 }
             }
-            if (data?.hasExtra(GameMenuContract.RESULT_ENABLE_FAST_FORWARD) == true) {
-                baseGameScreenViewModel.retroGameView.retroGameView?.apply {
-                    val fastForwardEnabled =
-                        data.getBooleanExtra(
-                            GameMenuContract.RESULT_ENABLE_FAST_FORWARD,
-                            false,
-                        )
-                    this.frameSpeed = if (fastForwardEnabled) 2 else 1
+            val fastForwardRequest =
+                if (data?.hasExtra(GameMenuContract.RESULT_ENABLE_FAST_FORWARD) == true) {
+                    data.getBooleanExtra(GameMenuContract.RESULT_ENABLE_FAST_FORWARD, false)
+                } else {
+                    null
                 }
+            // The speed slider can change while fast-forward is already on, so re-apply it whenever the menu closes.
+            lifecycleScope.launch {
+                baseGameScreenViewModel.applyFastForward(fastForwardRequest)
             }
             if (data?.getBooleanExtra(GameMenuContract.RESULT_EDIT_TOUCH_CONTROLS, false) == true) {
                 baseGameScreenViewModel.showEditControls(true)

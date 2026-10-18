@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.fredporciuncula.flow.preferences.FlowSharedPreferences
 import com.swordfish.lemuroid.R
+import com.swordfish.lemuroid.app.shared.game.FastForwardSpeeds
 import com.swordfish.lemuroid.app.shared.settings.HDModeQuality
 import com.swordfish.lemuroid.common.math.Fraction
 import com.swordfish.lemuroid.lib.storage.cache.CacheCleaner
@@ -31,6 +32,11 @@ class SettingsManager(private val context: Context, sharedPreferences: Lazy<Shar
         )
 
     suspend fun hdMode() = booleanPreference(R.string.pref_key_hd_mode, false)
+
+    suspend fun fastForwardSpeed() =
+        FastForwardSpeeds.speedAt(
+            intPreference(R.string.pref_key_fast_forward_speed_index, FastForwardSpeeds.DEFAULT_INDEX),
+        )
 
     suspend fun viewportAlignment() = stringPreference(R.string.pref_key_viewport_alignment, "center")
 

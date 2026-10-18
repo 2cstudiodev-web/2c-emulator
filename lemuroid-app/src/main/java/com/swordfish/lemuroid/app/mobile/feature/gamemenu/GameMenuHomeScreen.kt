@@ -18,9 +18,12 @@ import com.alorma.compose.settings.storage.memory.rememberMemoryIntSettingState
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.tilt.TiltConfigurationMenuEntry
 import com.swordfish.lemuroid.app.shared.GameMenuContract
+import com.swordfish.lemuroid.app.shared.game.FastForwardSpeeds
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsList
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsMenuLink
+import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsSlider
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsSwitch
+import com.swordfish.lemuroid.app.utils.android.settings.intPreferenceState
 import kotlin.reflect.KFunction1
 
 @Composable
@@ -106,6 +109,29 @@ fun GameMenuHomeScreen(
                 state = rememberMemoryBooleanSettingState(gameMenuRequest.fastForwardEnabled),
                 onCheckedChange = {
                     onResult { putExtra(GameMenuContract.RESULT_ENABLE_FAST_FORWARD, it) }
+                },
+            )
+
+            // Stored straight to preferences; the game applies it when the menu closes.
+            val speedIndex =
+                intPreferenceState(
+                    key = stringResource(id = R.string.pref_key_fast_forward_speed_index),
+                    default = FastForwardSpeeds.DEFAULT_INDEX,
+                )
+            LemuroidSettingsSlider(
+                enabled = true,
+                state = speedIndex,
+                steps = FastForwardSpeeds.SPEEDS.size - 2,
+                valueRange = 0f..(FastForwardSpeeds.SPEEDS.size - 1).toFloat(),
+                title = { Text(text = stringResource(id = R.string.game_menu_fast_forward_speed)) },
+                subtitle = {
+                    Text(
+                        text =
+                            stringResource(
+                                id = R.string.game_menu_fast_forward_speed_value,
+                                FastForwardSpeeds.speedAt(speedIndex.value),
+                            ),
+                    )
                 },
             )
         }

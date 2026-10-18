@@ -96,6 +96,7 @@
     <string name="game_menu_edit_touch_controls">設定版面及虛擬控制器</string>
     <string name="game_menu_mute_audio">靜音</string>
     <string name="game_menu_fast_forward">快進</string>
+    <string name="game_menu_fast_forward_speed">快進倍速</string>
     <string name="game_menu_change_disk_disk">磁碟 %1$s</string>
     <string name="game_loading_preparing_game">設置遊戲中…</string>
     <string name="game_toast_settings_button_using_gamepad">檢測到遊戲控制器。 請至設置選單設定 %1$s</string>
