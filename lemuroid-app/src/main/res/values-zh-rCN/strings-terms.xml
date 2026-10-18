@@ -13,7 +13,7 @@
     <string name="terms_s5_title">5. 不提供担保</string>
     <string name="terms_s5_body">2C Emulator 按“现状”提供，不附带任何形式的担保。在法律允许的最大范围内，2C Studio 不对因使用本软件造成的任何损失负责，包括存档或数据丢失。请自行备份存档。</string>
     <string name="terms_s6_title">6. 隐私</string>
-    <string name="terms_s6_body">2C Studio 不收集个人数据。您的游戏、存档和设置都保存在您的设备上。为显示封面图，App 会从公开的 libretro 封面服务器下载图片，该服务器可以看到您的 IP 地址和所请求的封面名称。</string>
+    <string name="terms_s6_body">2C Studio 不收集个人数据。您的游戏、存档和设置都保存在您的设备上。为显示封面图，App 会从公开的 libretro 封面服务器下载图片，该服务器可以看到您的 IP 地址和所请求的封面名称。App 启动时还会从 emulator.2cstudio.app 下载一个很小的设定文件，以便 2C Studio 在法律要求时停用某项功能；该服务器（Cloudflare）可以看到您的 IP 地址。</string>
     <string name="terms_s7_title">7. 条款变更</string>
     <string name="terms_s7_body">我们可能会更新本条款。条款变更后，您需要先同意新版本才能继续使用。</string>
     <string name="terms_s8_title">8. 联系与侵权举报</string>

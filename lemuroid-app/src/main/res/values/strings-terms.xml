@@ -13,7 +13,7 @@
     <string name="terms_s5_title">5. No warranty</string>
     <string name="terms_s5_body">2C Emulator is provided \"as is\", without warranty of any kind. To the maximum extent permitted by law, 2C Studio is not liable for any damages arising from its use, including lost saves or data. Keep backups of your saves.</string>
     <string name="terms_s6_title">6. Privacy</string>
-    <string name="terms_s6_body">2C Studio does not collect personal data. Your games, saves and settings stay on your device. To show cover art, the app downloads images from the public libretro thumbnail server, which can see your IP address and the names of the covers requested.</string>
+    <string name="terms_s6_body">2C Studio does not collect personal data. Your games, saves and settings stay on your device. To show cover art, the app downloads images from the public libretro thumbnail server, which can see your IP address and the names of the covers requested. At startup the app also downloads a small settings file from emulator.2cstudio.app, which lets 2C Studio withdraw a feature if legally required; that server (Cloudflare) can see your IP address.</string>
     <string name="terms_s7_title">7. Changes</string>
     <string name="terms_s7_body">We may update these terms. When they change, you will be asked to accept the new version before continuing.</string>
     <string name="terms_s8_title">8. Contact and infringement reports</string>
