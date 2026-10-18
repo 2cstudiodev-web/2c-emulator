@@ -35,7 +35,14 @@ jobs:
           distribution: temurin
           java-version: "21"
 
+      # The automatic wrapper check also scans the oboe submodule's unused sample apps, one of which
+      # has a jar Gradle doesn't list; only the root wrapper is used, so check that one explicitly.
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          validate-wrappers: false
+
+      - name: Validate Gradle wrapper (8.10.2)
+        run: echo "91a239400bb638f36a1795d8fdf7939d532cdc7d794d1119b7261aac158b1e60  gradle/wrapper/gradle-wrapper.jar" | sha256sum -c -
 
       - name: Android SDK packages
         run: |
