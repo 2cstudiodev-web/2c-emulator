@@ -18,7 +18,7 @@ import time
 from PIL import Image
 
 ADB = os.path.expandvars(r"%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe")
-PKG = "com.twocstudio.emulator.debug"
+PKG = os.environ.get("APP_PACKAGE", "com.twocstudio.emulator.debug")
 MAIN = PKG + "/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity"
 SHOTS = os.environ.get("DEVICE_TEST_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "out"))
 DB_DIR = os.path.join(SHOTS, "db")
@@ -68,7 +68,9 @@ def tap_text(text, scrolls=14):
 
 def load_titles(system_id):
     os.makedirs(DB_DIR, exist_ok=True)
-    for f in ("retrograde", "retrograde-wal", "retrograde-shm"):
+    # Release builds are not debuggable, so run-as fails; set SKIP_DB_PULL=1 to reuse the debug
+    # build's copy (both builds scan the same folder into the same titles).
+    for f in ("retrograde", "retrograde-wal", "retrograde-shm") if not os.environ.get("SKIP_DB_PULL") else ():
         data = adb("exec-out", "run-as", PKG, "cat", f"databases/{f}", binary=True)
         open(f"{DB_DIR}/{f}", "wb").write(data)
     con = sqlite3.connect(f"{DB_DIR}/retrograde")

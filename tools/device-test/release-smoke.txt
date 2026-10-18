@@ -1,0 +1,22 @@
+nes|Nintendo|nova.nes
+snes|Super Nintendo|gothicvania.sfc
+gb|Game Boy|libbet.gb
+gbc|Game Boy Color|ucity.gbc
+gba|Game Boy Advance|skyland.gba
+nds|Nintendo DS|snake-nds.nds
+n64|Nintendo 64|tecto.z64
+3ds|Nintendo 3DS (Beta)|SuperHaxagon.3dsx
+atari2600|Atari 2600|jungletemple.a26
+atari7800|Atari 7800|sidebounce.a78
+lynx|Atari Lynx|treejumper.lnx
+ngp,ngc|Neo Geo Pocket|hopman.ngp
+ws,wsc|WonderSwan|one_last_lap.wsc
+arcade|Arcade|gridlee.zip
+md|Sega Genesis|kleleatoms.md
+sms|Sega Master System|balloon-master.sms
+gg|Game Gear|tunnel.gg
+pce|PCEngine|maria.pce
+psx|PlayStation|buzzybee.cue
+psp|PlayStation Portable|Spelunky_PSP.pbp
+ps2|PlayStation 2 (Beta)|tyracraft.iso
+dos|DOS (Beta)|loonies8192.dosz
