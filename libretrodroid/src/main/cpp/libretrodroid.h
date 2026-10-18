@@ -18,6 +18,8 @@
 #ifndef LIBRETRODROID_LIBRETRODROID_H
 #define LIBRETRODROID_LIBRETRODROID_H
 
+#include <chrono>
+#include <functional>
 #include <jni.h>
 
 #include <EGL/egl.h>
@@ -49,6 +51,8 @@
 namespace libretrodroid {
 
 class LibretroDroid {
+    static constexpr std::chrono::milliseconds MAX_FAST_FORWARD_STEP_DURATION { 20 };
+
 public:
     static LibretroDroid& getInstance()
     {

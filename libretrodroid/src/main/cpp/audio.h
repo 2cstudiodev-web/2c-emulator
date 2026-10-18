@@ -73,6 +73,7 @@ private:
     LinearResampler resampler;
     std::unique_ptr<oboe::FifoBuffer> fifoBuffer = nullptr;
     std::unique_ptr<int16_t[]> temporaryAudioBuffer = nullptr;
+    int32_t temporaryAudioBufferSize = 0;
 
     oboe::ManagedStream stream = nullptr;
     std::unique_ptr<oboe::LatencyTuner> latencyTuner = nullptr;

@@ -15,6 +15,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <chrono>
+#include <functional>
 #include <jni.h>
 
 #include <EGL/egl.h>
@@ -456,8 +458,16 @@ void LibretroDroid::step() {
         frames = std::min(requestedFrames, 2u);
     }
 
-    for (size_t i = 0; i < frames * frameSpeed; i++)
+    // 2C: at high fast-forward speeds running every requested frame in one step can take seconds,
+    // which blocks pausing the GL thread (opening the menu) long enough to trigger an ANR. Run as
+    // many frames as fit in a time budget instead, so the speed setting acts as a maximum.
+    const size_t requestedRuns = frames * frameSpeed;
+    const auto stepStart = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < requestedRuns; i++) {
         core->retro_run();
+        if (frameSpeed > 1 && std::chrono::steady_clock::now() - stepStart > MAX_FAST_FORWARD_STEP_DURATION)
+            break;
+    }
 
     if (video && !video->rendersInVideoCallback()) {
         video->renderFrame();
@@ -622,7 +632,8 @@ void LibretroDroid::afterGameLoad() {
 
 float LibretroDroid::findDefaultAspectRatio(const retro_system_av_info& system_av_info) {
     float result = system_av_info.geometry.aspect_ratio;
-    if (result < 0) {
+    // 2C: the libretro API defines aspect_ratio <= 0 as "derive it from base width / height".
+    if (result <= 0) {
         result =
             (float) system_av_info.geometry.base_width / (float) system_av_info.geometry.base_height;
     }

@@ -18,6 +18,7 @@
 #include "log.h"
 
 #include "audio.h"
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -55,6 +56,7 @@ bool Audio::initializeStream() {
         baseConversionFactor = (double) inputSampleRate / stream->getSampleRate();
         fifoBuffer = std::make_unique<oboe::FifoBuffer>(2, audioBufferSize);
         temporaryAudioBuffer = std::unique_ptr<int16_t[]>(new int16_t[audioBufferSize]);
+        temporaryAudioBufferSize = audioBufferSize;
         latencyTuner = std::make_unique<oboe::LatencyTuner>(*stream);
         return true;
     } else {
@@ -115,9 +117,21 @@ oboe::DataCallbackResult Audio::onAudioReady(oboe::AudioStream *oboeStream, void
     int32_t currentFramesToSubmit = std::round(framesToSubmit);
     framesToSubmit -= currentFramesToSubmit;
 
+    auto outputArray = reinterpret_cast<int16_t *>(audioData);
+
+    // 2C: at high fast-forward speeds this callback would need more input than the temporary
+    // buffer holds (readNow zero-fills the whole request, overflowing it). Drop the audio instead.
+    if (currentFramesToSubmit * 2 > temporaryAudioBufferSize) {
+        fifoBuffer->read(temporaryAudioBuffer.get(),
+                         std::min(static_cast<int32_t>(fifoBuffer->getFullFramesAvailable()), temporaryAudioBufferSize));
+        framesToSubmit = 0.0;
+        std::fill(outputArray, outputArray + numFrames * 2, 0);
+        latencyTuner->tune();
+        return oboe::DataCallbackResult::Continue;
+    }
+
     fifoBuffer->readNow(temporaryAudioBuffer.get(), currentFramesToSubmit * 2);
 
-    auto outputArray = reinterpret_cast<int16_t *>(audioData);
     resampler.resample(temporaryAudioBuffer.get(), currentFramesToSubmit, outputArray, numFrames);
 
     latencyTuner->tune();
