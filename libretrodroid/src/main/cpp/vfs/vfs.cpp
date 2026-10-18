@@ -130,16 +130,25 @@ struct retro_vfs_file_handle* VFS::virtualOpen(const char *path, unsigned int mo
 
     LOGD("VFS Performing virtual file open: %s", virtualFile->getFileName().data());
 
-    auto stream = new retro_vfs_file_handle;
-
     int duplicateFD = dup(virtualFile->getFD());
-    FILE* file = fdopen(duplicateFD, "rb");
+    FILE* file = duplicateFD >= 0 ? fdopen(duplicateFD, "rb") : nullptr;
+    if (file == nullptr) {
+        LOGE("VFS Unable to open virtual file: %s", virtualFile->getFileName().data());
+        if (duplicateFD >= 0) ::close(duplicateFD);
+        return nullptr;
+    }
     size_t size = Utils::getFileSize(file);
 
     LOGV("VFS Virtual file size: %i", size);
 
-    stream->fd = duplicateFD;
-    stream->hints = hints;
+    auto stream = new retro_vfs_file_handle;
+
+    // The FILE owns the descriptor: retro_vfs_file_close_impl fcloses fp and then also closes
+    // stream->fd when it is > 0, so storing the descriptor there closed it twice. If another thread
+    // reused that number in between, its file was closed under it (fdsan aborts seen with PS1 and
+    // PSP games). Like upstream's non-mmap path, virtual files are always buffered with fd = 0.
+    stream->fd = 0;
+    stream->hints = hints & ~RETRO_VFS_FILE_ACCESS_HINT_FREQUENT_ACCESS & ~(1 << 8 /* RFILE_HINT_UNBUFFERED */);
     stream->size = size;
     stream->buf = nullptr;
     stream->fp = file;

@@ -14,5 +14,8 @@ commits LibretroDroid 0.14.0 uses.
   API specifies (Gearsystem reports 0 for 1:1 PAR, which rendered a black screen).
 - Video: hardware-rendered cores' leftover GL state (bound vertex buffers/VAO, scissor, blending,
   stencil, culling) is reset before presenting; Play! (PS2) ran but showed a black screen.
+- VFS: virtual (SAF) files stored their descriptor in both `fp` and `fd`, so closing one closed
+  the descriptor twice. When another thread reused the number in between, fdsan aborted the game
+  (seen randomly with PS1 and PSP games). Virtual files are now buffered only, with `fd = 0`.
 - Diagnostics: a failed core dlopen now logs dlerror().
 - Build: added missing `#include <functional>` so it compiles with NDK 27.
