@@ -38,7 +38,8 @@ void* get_symbol(void* handle, const char* symbol) {
 void Core::open(const std::string& soCorePath) {
     libHandle = dlopen(soCorePath.c_str(), RTLD_LOCAL | RTLD_LAZY);
     if (!libHandle) {
-        LOGE("Cannot dlopen library, closing");
+        // 2C: log the linker's reason (missing dependency, bad ELF, ...), not just the failure.
+        LOGE("Cannot dlopen library, closing: %s", dlerror());
         throw std::runtime_error("Cannot dlopen library");
     }
     retro_cheat_reset = (void (*)()) get_symbol(libHandle, "retro_cheat_reset");

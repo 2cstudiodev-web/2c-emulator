@@ -12,4 +12,5 @@ commits LibretroDroid 0.14.0 uses.
   maximum instead of blocking the GL thread for seconds (which caused ANRs when opening the menu).
 - Video: an aspect ratio of 0 from the core now means "use base width / height", as the libretro
   API specifies (Gearsystem reports 0 for 1:1 PAR, which rendered a black screen).
+- Diagnostics: a failed core dlopen now logs dlerror().
 - Build: added missing `#include <functional>` so it compiles with NDK 27.
