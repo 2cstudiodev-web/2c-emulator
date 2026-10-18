@@ -48,3 +48,25 @@ git submodule update --init           # upstream lemuroid-cores
 ```
 
 The APK targets `arm64-v8a` only.
+
+## Testing on a device
+
+`tools/device-test/` holds the scripts used to smoke-test every system on a USB-connected Solana
+Seeker (launch each game, screenshot, check for crashes). See its README.
+
+## Website and legal pages
+
+Terms of use, privacy policy and copyright information are published at
+https://emulator.2cstudio.app. The terms shown there are generated from the same string
+resources as the in-app terms.
+
+## Trademarks
+
+"2C Emulator", "2C Studio" and their logos and icons are trademarks of 2C Studio. The GPL covers
+the source code only and grants no rights to these names or marks. If you distribute a modified
+version, give it a different name and icon, and do not present it as made or endorsed by
+2C Studio.
+
+2C Emulator is not affiliated with, endorsed or sponsored by Nintendo, Sony, Sega, Atari, SNK,
+Bandai or any other console maker. All other trademarks belong to their respective owners and are
+mentioned only to describe compatibility.
