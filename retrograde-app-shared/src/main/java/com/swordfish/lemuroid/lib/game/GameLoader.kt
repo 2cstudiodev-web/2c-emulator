@@ -92,7 +92,9 @@ class GameLoader(
 
                 val gameFiles =
                     runCatching {
-                        val useVFS = systemCoreConfig.supportsLibretroVFS && directLoad
+                        val useVFS =
+                            systemCoreConfig.supportsLibretroVFS && directLoad &&
+                                !needsRealDirectory(systemCoreConfig.coreID, game.fileName)
                         val dataFiles = retrogradeDatabase.dataFileDao().selectDataFilesForGame(game.id)
                         lemuroidLibrary.getGameFiles(
                             game,
@@ -158,6 +160,18 @@ class GameLoader(
     private fun isArchitectureSupported(systemCoreConfig: SystemCoreConfig): Boolean {
         val supportedOnlyArchitectures = systemCoreConfig.supportedOnlyArchitectures ?: return true
         return Build.SUPPORTED_ABIS.toSet().intersect(supportedOnlyArchitectures).isNotEmpty()
+    }
+
+    /**
+     * PPSSPP boots a .pbp as a loose executable by mounting the folder that contains it, which does
+     * not exist for a libretro virtual file, so the boot fails and the core then crashes. Those
+     * files are copied to the cache instead (they are small; ISO/CSO images keep using VFS).
+     */
+    private fun needsRealDirectory(
+        coreID: CoreID,
+        fileName: String,
+    ): Boolean {
+        return coreID == CoreID.PPSSPP && fileName.endsWith(".pbp", ignoreCase = true)
     }
 
     private fun findLibrary(
