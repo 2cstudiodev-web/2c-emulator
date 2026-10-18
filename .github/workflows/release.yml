@@ -1,0 +1,99 @@
+# Builds the signed 2C Emulator release APK.
+#
+# - Push a tag "v*" (e.g. v0.1.0): builds and publishes a GitHub release with the APK and its SHA-256,
+#   so every released APK matches the tagged source (GPLv3).
+# - Run manually (workflow_dispatch): builds and keeps the APK as a workflow artifact only.
+#
+# Secrets: KEYSTORE_B64 (keystore/2c-emulator-release.jks, base64) and KEYSTORE_PROPERTIES (the
+# keystore.properties file). Version: versionCode / versionName in lemuroid-app/build.gradle.kts, and
+# the tag must be "v" + versionName.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      excludedSystems:
+        description: "Systems to leave out of this build, comma separated (e.g. 3ds,ps2). Empty = all."
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-35" "build-tools;34.0.0" "ndk;27.0.12077973" "cmake;3.22.1" > /dev/null
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+
+      - name: Extra cores (pinned, checksum verified)
+        run: bash extra-cores/fetch-cores.sh
+
+      - name: Signing key from secrets
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          test -n "$KEYSTORE_B64" || { echo "::error::KEYSTORE_B64 secret is missing"; exit 1; }
+          mkdir -p keystore
+          echo "$KEYSTORE_B64" | base64 -d > keystore/2c-emulator-release.jks
+          printf '%s\n' "$KEYSTORE_PROPERTIES" > keystore.properties
+
+      - name: Check tag matches versionName
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          V=$(grep -oP 'versionName = "\K[^"]+' lemuroid-app/build.gradle.kts)
+          test "v$V" = "$GITHUB_REF_NAME" || { echo "::error::tag $GITHUB_REF_NAME does not match versionName $V"; exit 1; }
+
+      - name: Build release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :lemuroid-app:assembleFreeBundleRelease --no-daemon \
+            -PexcludedSystems="${{ github.event.inputs.excludedSystems || '' }}"
+
+      - name: Name the file
+        id: meta
+        run: |
+          V=$(grep -oP 'versionName = "\K[^"]+' lemuroid-app/build.gradle.kts)
+          N="2C-Emulator-$V.apk"
+          cp lemuroid-app/build/outputs/apk/freeBundle/release/lemuroid-app-free-bundle-release.apk "$N"
+          sha256sum "$N" > "$N.sha256"
+          cat "$N.sha256"
+          # Every bundled core must be a real library, not a broken symlink stub.
+          unzip -l "$N" | awk '/_libretro_android.so/ && $1 < 100000 { print "small core: " $4; bad=1 } END { exit bad }'
+          echo "name=$N" >> "$GITHUB_OUTPUT"
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.name }}
+          path: |
+            ${{ steps.meta.outputs.name }}
+            ${{ steps.meta.outputs.name }}.sha256
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.meta.outputs.name }}" "${{ steps.meta.outputs.name }}.sha256" \
+            --title "2C Emulator ${{ steps.meta.outputs.version }}" \
+            --notes "2C Emulator ${{ steps.meta.outputs.version }}, built by GitHub Actions from commit ${GITHUB_SHA::7}. Source code: this tag. No games, BIOS or keys are included. Extra cores: release cores-2026-10-18."
