@@ -39,6 +39,11 @@ enum class GameMenuRoute(
         titleId = R.string.game_menu_load,
         parent = HOME,
     ),
+    SKINS(
+        route = "skins",
+        titleId = R.string.settings_title_pad_skin,
+        parent = HOME,
+    ),
     OPTIONS(
         route = "options",
         titleId = R.string.game_menu_settings,

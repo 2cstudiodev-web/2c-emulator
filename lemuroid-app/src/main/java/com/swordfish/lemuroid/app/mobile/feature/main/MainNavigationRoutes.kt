@@ -67,6 +67,12 @@ enum class MainRoute(
         titleId = R.string.title_settings,
         showBottomNavigation = false,
     ),
+    SETTINGS_PAD_SKIN(
+        route = "settings/padskin",
+        titleId = R.string.settings_title_pad_skin,
+        parent = SETTINGS,
+        showBottomNavigation = false,
+    ),
     SETTINGS_TERMS(
         route = "settings/terms",
         titleId = R.string.settings_title_terms,

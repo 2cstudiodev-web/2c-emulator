@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title_pad_skin">手把外觀</string>
+    <string name="pad_skin_series_essentials">基礎</string>
+    <string name="pad_skin_series_retro">復古</string>
+    <string name="pad_skin_series_neon">霓虹</string>
+    <string name="pad_skin_series_onchain">鏈上</string>
+    <string name="pad_skin_series_genesis">Genesis 專屬</string>
+    <string name="pad_opacity_title">手把透明度</string>
+    <string name="pad_opacity_value">%1$d%%</string>
+    <string name="pad_opacity_description">橫向時，疊在遊戲畫面上的手把還會自動變成半透明。</string>
+</resources>

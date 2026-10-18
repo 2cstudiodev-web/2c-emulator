@@ -170,7 +170,17 @@ fun MobileGameScreen(viewModel: BaseGameScreenViewModel) {
                         touchControlsVisibleState.value
 
                 if (isVisible) {
-                    CompositionLocalProvider(LocalLemuroidPadTheme provides LemuroidPadTheme()) {
+                    val padSkin = viewModel.padSkin().collectAsState()
+                    val padOpacity = viewModel.padOpacityPercent().collectAsState()
+                    // In landscape most systems draw the controls on top of the game picture.
+                    val isOverlay = isLandscape && currentControllerConfig.allowTouchOverlay
+                    val padTheme =
+                        remember(padSkin.value, padOpacity.value, isOverlay) {
+                            val palette = padSkin.value.palette
+                            val visible = if (isOverlay) palette.forOverlay() else palette
+                            LemuroidPadTheme(visible.withOpacity(padOpacity.value / 100f))
+                        }
+                    CompositionLocalProvider(LocalLemuroidPadTheme provides padTheme) {
                         if (!isLandscape) {
                             PadContainer(
                                 modifier = Modifier.layoutId(GameScreenLayout.CONSTRAINTS_BOTTOM_CONTAINER),

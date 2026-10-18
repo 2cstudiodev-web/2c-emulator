@@ -13,6 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.swordfish.lemuroid.app.mobile.feature.game.GameService
 import com.swordfish.lemuroid.app.mobile.feature.settings.SettingsManager
+import com.swordfish.lemuroid.app.shared.game.skins.PadSkin
+import com.swordfish.lemuroid.app.shared.game.skins.PadSkinPreferences
+import com.swordfish.lemuroid.app.shared.game.skins.PadSkins
 import com.swordfish.lemuroid.app.shared.game.viewmodel.GameViewModelInput
 import com.swordfish.lemuroid.app.shared.game.viewmodel.GameViewModelRetroGameView
 import com.swordfish.lemuroid.app.shared.game.viewmodel.GameViewModelSaves
@@ -42,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -267,6 +271,20 @@ class BaseGameScreenViewModel(
         withLoading {
             saves.loadQuickSave()
         }
+    }
+
+    private val padSkinState = MutableStateFlow(PadSkins.find(PadSkinPreferences.selectedId(appContext)))
+
+    private val padOpacityState = MutableStateFlow(PadSkinPreferences.opacityPercent(appContext))
+
+    fun padSkin(): StateFlow<PadSkin> = padSkinState
+
+    fun padOpacityPercent(): StateFlow<Int> = padOpacityState
+
+    /** Re-reads the controller skin and opacity, which the game menu may have changed. */
+    fun refreshPadSkin() {
+        padSkinState.value = PadSkins.find(PadSkinPreferences.selectedId(appContext))
+        padOpacityState.value = PadSkinPreferences.opacityPercent(appContext)
     }
 
     fun toggleFastForward() {

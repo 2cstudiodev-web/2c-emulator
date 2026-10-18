@@ -49,6 +49,7 @@ import com.swordfish.lemuroid.app.mobile.feature.gamemenu.states.GameMenuStatesV
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
 import com.swordfish.lemuroid.app.shared.GameMenuContract
 import com.swordfish.lemuroid.app.shared.coreoptions.LemuroidCoreOption
+import com.swordfish.lemuroid.app.shared.game.skins.PadSkinPicker
 import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
 import com.swordfish.lemuroid.common.kotlin.serializable
 import com.swordfish.lemuroid.lib.android.RetrogradeComponentActivity
@@ -217,6 +218,9 @@ class GameMenuActivity : RetrogradeComponentActivity() {
                                 onResult { putExtra(GameMenuContract.RESULT_LOAD, it) }
                             },
                         )
+                    }
+                    composable(GameMenuRoute.SKINS) {
+                        PadSkinPicker(modifier = Modifier.fillMaxSize())
                     }
                     composable(GameMenuRoute.OPTIONS) {
                         GameMenuCoreOptionsScreen(

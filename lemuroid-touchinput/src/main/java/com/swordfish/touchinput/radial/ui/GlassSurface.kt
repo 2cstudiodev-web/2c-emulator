@@ -10,6 +10,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -64,6 +65,7 @@ fun GlassSurface(
     modifier: Modifier = Modifier,
     cornerRadius: Dp = Dp.Infinity,
     fillColor: Color = Color.White.copy(alpha = 0.15f),
+    fillBrush: Brush? = null,
     shadowColor: Color = Color.Black.copy(alpha = 0.3f),
     shadowWidth: Dp = 1.dp,
     content: @Composable BoxWithConstraintsScope.() -> Unit = { },
@@ -111,12 +113,21 @@ fun GlassSurface(
                         drawImage(shadowBitmap, topLeft = shadowOffset)
                     }
 
-                    drawRoundRect(
-                        color = fillColor,
-                        topLeft = Offset(0f, 0f),
-                        size = expandedSize,
-                        cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
-                    )
+                    if (fillBrush != null) {
+                        drawRoundRect(
+                            brush = fillBrush,
+                            topLeft = Offset(0f, 0f),
+                            size = expandedSize,
+                            cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+                        )
+                    } else {
+                        drawRoundRect(
+                            color = fillColor,
+                            topLeft = Offset(0f, 0f),
+                            size = expandedSize,
+                            cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+                        )
+                    }
 
                     drawContent()
                 }

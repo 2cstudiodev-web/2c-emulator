@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title_pad_skin">Controller skin</string>
+    <string name="pad_skin_series_essentials">Essentials</string>
+    <string name="pad_skin_series_retro">Retro</string>
+    <string name="pad_skin_series_neon">Neon</string>
+    <string name="pad_skin_series_onchain">On-chain</string>
+    <string name="pad_skin_series_genesis">Genesis exclusive</string>
+    <string name="pad_opacity_title">Controller opacity</string>
+    <string name="pad_opacity_value">%1$d%%</string>
+    <string name="pad_opacity_description">In landscape, controls drawn over the game also become see-through automatically.</string>
+</resources>

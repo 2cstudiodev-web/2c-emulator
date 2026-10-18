@@ -56,6 +56,7 @@ import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
 import com.swordfish.lemuroid.app.shared.GameInteractor
 import com.swordfish.lemuroid.app.shared.game.BaseGameActivity
 import com.swordfish.lemuroid.app.shared.game.GameLauncher
+import com.swordfish.lemuroid.app.shared.game.skins.PadSkinPicker
 import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
 import com.swordfish.lemuroid.app.shared.main.BusyActivity
 import com.swordfish.lemuroid.app.shared.main.GameLaunchTaskHandler
@@ -297,6 +298,9 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                 ),
                             navController = navController,
                         )
+                    }
+                    composable(MainRoute.SETTINGS_PAD_SKIN) {
+                        PadSkinPicker(modifier = Modifier.padding(padding))
                     }
                     composable(MainRoute.SETTINGS_TERMS) {
                         TermsContent(modifier = Modifier.padding(padding))

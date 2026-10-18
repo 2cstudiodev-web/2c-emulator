@@ -28,6 +28,7 @@ fun LemuroidButtonForeground(
     GlassSurface(
         modifier = modifier.fillMaxSize().padding(theme.foregroundPadding),
         fillColor = theme.foregroundFill(pressed.value),
+        fillBrush = theme.foregroundBrush(pressed.value),
         shadowColor = theme.level3Shadow,
         shadowWidth = theme.level3ShadowWidth,
         content = {

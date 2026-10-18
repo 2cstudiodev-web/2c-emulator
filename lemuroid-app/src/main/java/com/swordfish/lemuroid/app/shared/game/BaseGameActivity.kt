@@ -402,6 +402,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                 } else {
                     null
                 }
+            baseGameScreenViewModel.refreshPadSkin()
             // The speed slider can change while fast-forward is already on, so re-apply it whenever the menu closes.
             lifecycleScope.launch {
                 baseGameScreenViewModel.applyFastForward(fastForwardRequest)

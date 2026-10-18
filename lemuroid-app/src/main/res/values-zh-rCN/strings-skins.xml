@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title_pad_skin">手柄皮肤</string>
+    <string name="pad_skin_series_essentials">基础</string>
+    <string name="pad_skin_series_retro">复古</string>
+    <string name="pad_skin_series_neon">霓虹</string>
+    <string name="pad_skin_series_onchain">链上</string>
+    <string name="pad_skin_series_genesis">Genesis 专属</string>
+    <string name="pad_opacity_title">手柄透明度</string>
+    <string name="pad_opacity_value">%1$d%%</string>
+    <string name="pad_opacity_description">横屏时，叠在游戏画面上的手柄还会自动变成半透明。</string>
+</resources>
