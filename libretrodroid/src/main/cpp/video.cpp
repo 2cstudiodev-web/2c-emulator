@@ -16,6 +16,7 @@
  */
 
 #include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #include <EGL/egl.h>
 #include <cstdlib>
 #include <string>
@@ -141,6 +142,9 @@ void Video::renderFrame() {
     if (skipDuplicateFrames && !isDirty) return;
     isDirty = false;
 
+    if (hardwareAccelerated) {
+        resetCoreGLState();
+    }
     glDisable(GL_DEPTH_TEST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -285,6 +289,23 @@ Video::Video(
     initializeRenderer(renderingOptions);
 }
 
+// 2C: hardware-rendered cores (e.g. Play!) leave their own GL state bound after drawing. The
+// presentation pass below uses client-side vertex arrays, which silently read from whatever buffer
+// object is still bound, and it assumes no scissor, blending, stencil or culling. Reset them so the
+// frame actually reaches the screen instead of a black picture.
+void Video::resetCoreGLState() {
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_CULL_FACE);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_TRUE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+}
+
 void Video::updateShaderType(ShaderManager::Config shaderConfig) {
     requestedShaderConfig = std::move(shaderConfig);
 }
@@ -292,6 +313,7 @@ void Video::updateShaderType(ShaderManager::Config shaderConfig) {
 void Video::initializeRenderer(RenderingOptions renderingOptions) {
     auto shaders = ShaderManager::getShader(requestedShaderConfig);
 
+    hardwareAccelerated = renderingOptions.hardwareAccelerated;
     if (renderingOptions.hardwareAccelerated) {
         renderer = new FramebufferRenderer(
             renderingOptions.width,

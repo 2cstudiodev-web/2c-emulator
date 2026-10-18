@@ -97,6 +97,8 @@ private:
     void initializeRenderer(RenderingOptions renderingOptions);
 
 private:
+    void resetCoreGLState();
+
     ShaderManager::Config requestedShaderConfig = ShaderManager::Config {
         ShaderManager::Type::SHADER_DEFAULT
     };
@@ -104,6 +106,7 @@ private:
 
     bool isDirty = false;
     bool skipDuplicateFrames = false;
+    bool hardwareAccelerated = false;
 
     std::vector<ShaderChainEntry> shadersChain;
 
