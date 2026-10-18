@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -7,6 +9,12 @@ plugins {
     id("androidx.baselineprofile")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val releaseSigning =
+    Properties().apply {
+        val file = rootProject.file("keystore.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
 
 // Systems withdrawn from this build (for example after a takedown request), as system ids:
 //   ./gradlew :lemuroid-app:assembleFreeBundleRelease -PexcludedSystems=3ds,ps2
@@ -150,18 +158,23 @@ android {
             storeFile = file("$rootDir/debug.keystore")
         }
 
-        maybeCreate("release").apply {
-            storeFile = file("$rootDir/release.jks")
-            keyAlias = "lemuroid"
-            storePassword = "lemuroid"
-            keyPassword = "lemuroid"
+        // Release signing comes from keystore.properties in the repository root (never committed;
+        // backed up in Google Drive, and recreated from Actions secrets in CI). Without it the
+        // release build is unsigned, so forks still build.
+        if (releaseSigning.containsKey("storeFile")) {
+            maybeCreate("release").apply {
+                storeFile = rootProject.file(releaseSigning.getProperty("storeFile"))
+                storePassword = releaseSigning.getProperty("storePassword")
+                keyAlias = releaseSigning.getProperty("keyAlias")
+                keyPassword = releaseSigning.getProperty("keyPassword")
+            }
         }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            signingConfig = signingConfigs["release"]
+            signingConfig = signingConfigs.findByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             resValue("string", "lemuroid_name", "2C Emulator")
         }
