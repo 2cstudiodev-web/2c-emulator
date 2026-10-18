@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="system_unavailable_message">2C Emulator 已不再提供这个主机。你的游戏文件和存档都没有被改动。</string>
+</resources>

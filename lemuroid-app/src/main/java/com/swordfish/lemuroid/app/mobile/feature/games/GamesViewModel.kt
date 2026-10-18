@@ -8,6 +8,7 @@ import com.swordfish.lemuroid.common.paging.buildFlowPaging
 import com.swordfish.lemuroid.lib.library.MetaSystemID
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
+import com.swordfish.lemuroid.lib.library.pagedWithoutDisabledSystems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +38,10 @@ class GamesViewModel(
             .map { systemIds -> systemIds.map { it.dbname } }
             .flatMapLatest {
                 when (it.size) {
-                    0 -> emptyFlow()
+                    0 -> emptyFlow<PagingData<Game>>()
                     1 -> buildFlowPaging(20, viewModelScope) { retrogradeDb.gameDao().selectBySystem(it.first()) }
                     else -> buildFlowPaging(20, viewModelScope) { retrogradeDb.gameDao().selectBySystems(it) }
                 }
             }
+            .pagedWithoutDisabledSystems()
 }

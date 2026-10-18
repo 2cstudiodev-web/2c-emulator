@@ -7,12 +7,14 @@ import androidx.work.ListenableWorker
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.google.android.material.color.DynamicColors
+import com.swordfish.lemuroid.BuildConfig
 import com.swordfish.lemuroid.app.shared.covers.CoverUtils
 import com.swordfish.lemuroid.app.shared.startup.GameProcessInitializer
 import com.swordfish.lemuroid.app.shared.startup.MainProcessInitializer
 import com.swordfish.lemuroid.app.utils.android.isMainProcess
 import com.swordfish.lemuroid.ext.feature.context.ContextHandler
 import com.swordfish.lemuroid.lib.injection.HasWorkerInjector
+import com.swordfish.lemuroid.lib.library.SystemAvailability
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.DaggerApplication
@@ -25,6 +27,11 @@ class LemuroidApplication : DaggerApplication(), HasWorkerInjector, ImageLoaderF
     @SuppressLint("CheckResult")
     override fun onCreate() {
         super.onCreate()
+
+        SystemAvailability.init(
+            this,
+            BuildConfig.EXCLUDED_SYSTEMS.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toSet(),
+        )
 
         val initializeComponent =
             if (isMainProcess()) {

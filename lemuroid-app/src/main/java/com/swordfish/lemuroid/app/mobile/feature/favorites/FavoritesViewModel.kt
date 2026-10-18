@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.swordfish.lemuroid.common.paging.buildFlowPaging
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
+import com.swordfish.lemuroid.lib.library.pagedWithoutDisabledSystems
 import kotlinx.coroutines.flow.Flow
 
 class FavoritesViewModel(retrogradeDb: RetrogradeDatabase) : ViewModel() {
@@ -18,4 +19,5 @@ class FavoritesViewModel(retrogradeDb: RetrogradeDatabase) : ViewModel() {
 
     val favorites: Flow<PagingData<Game>> =
         buildFlowPaging(20, viewModelScope) { retrogradeDb.gameDao().selectFavorites() }
+            .pagedWithoutDisabledSystems()
 }

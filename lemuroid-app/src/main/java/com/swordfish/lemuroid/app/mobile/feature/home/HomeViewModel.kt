@@ -13,9 +13,11 @@ import com.swordfish.lemuroid.app.shared.settings.StorageFrameworkPickerLauncher
 import com.swordfish.lemuroid.common.coroutines.combine
 import com.swordfish.lemuroid.lib.core.CoresSelection
 import com.swordfish.lemuroid.lib.library.CoreID
+import com.swordfish.lemuroid.lib.library.SystemAvailability
 import com.swordfish.lemuroid.lib.library.SystemID
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
+import com.swordfish.lemuroid.lib.library.withoutDisabledSystems
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -151,18 +153,19 @@ class HomeViewModel(
         PendingOperationsMonitor(appContext).anyLibraryOperationInProgress()
 
     private fun discoveryGames(retrogradeDb: RetrogradeDatabase) =
-        retrogradeDb.gameDao().selectFirstNotPlayed(CAROUSEL_MAX_ITEMS)
+        retrogradeDb.gameDao().selectFirstNotPlayed(CAROUSEL_MAX_ITEMS).withoutDisabledSystems()
 
     private fun recentGames(retrogradeDb: RetrogradeDatabase) =
-        retrogradeDb.gameDao().selectFirstUnfavoriteRecents(CAROUSEL_MAX_ITEMS)
+        retrogradeDb.gameDao().selectFirstUnfavoriteRecents(CAROUSEL_MAX_ITEMS).withoutDisabledSystems()
 
     private fun favoritesGames(retrogradeDb: RetrogradeDatabase) =
-        retrogradeDb.gameDao().selectFirstFavorites(CAROUSEL_MAX_ITEMS)
+        retrogradeDb.gameDao().selectFirstFavorites(CAROUSEL_MAX_ITEMS).withoutDisabledSystems()
 
     private fun dsGamesCount(retrogradeDb: RetrogradeDatabase): Flow<Int> {
         return retrogradeDb.gameDao().selectSystemsWithCount()
             .map { systems ->
                 systems
+                    .filterNot { SystemAvailability.isDisabled(it.systemId) }
                     .firstOrNull { it.systemId == SystemID.NDS.dbname }
                     ?.count
                     ?: 0

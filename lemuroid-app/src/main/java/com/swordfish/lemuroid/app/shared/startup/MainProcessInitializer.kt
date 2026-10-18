@@ -5,6 +5,10 @@ import androidx.startup.Initializer
 import androidx.work.WorkManagerInitializer
 import com.swordfish.lemuroid.app.shared.library.LibraryIndexScheduler
 import com.swordfish.lemuroid.app.shared.savesync.SaveSyncWork
+import com.swordfish.lemuroid.lib.library.SystemAvailability
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainProcessInitializer : Initializer<Unit> {
@@ -12,6 +16,8 @@ class MainProcessInitializer : Initializer<Unit> {
         Timber.i("Requested initialization of main process tasks")
         SaveSyncWork.enqueueAutoWork(context, 0)
         LibraryIndexScheduler.scheduleCoreUpdate(context)
+        // Picks up systems 2C Studio has withdrawn; cached, so it also applies offline.
+        GlobalScope.launch(Dispatchers.IO) { SystemAvailability.refresh(context.applicationContext) }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {

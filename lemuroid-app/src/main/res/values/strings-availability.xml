@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="system_unavailable_message">This system is no longer available in 2C Emulator. Your game files and saves have not been touched.</string>
+</resources>

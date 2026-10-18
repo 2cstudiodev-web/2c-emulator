@@ -8,11 +8,52 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Systems withdrawn from this build (for example after a takedown request), as system ids:
+//   ./gradlew :lemuroid-app:assembleFreeBundleRelease -PexcludedSystems=3ds,ps2
+// The app hides them (see SystemAvailability), and a core library is left out of the APK once
+// every system it serves is excluded. Remote withdrawal without a new build: website config.json.
+val excludedSystems: Set<String> =
+    (findProperty("excludedSystems") as String?)
+        ?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.toSet()
+        ?: emptySet()
+
+val systemsByCoreLibrary =
+    mapOf(
+        "libblastem_libretro_android.so" to setOf("md"),
+        "libbsnes_libretro_android.so" to setOf("snes"),
+        "libcitra_libretro_android.so" to setOf("3ds"),
+        "libdesmume_libretro_android.so" to setOf("nds"),
+        "libdosbox_pure_libretro_android.so" to setOf("dos"),
+        "libfceumm_libretro_android.so" to setOf("nes"),
+        "libgambatte_libretro_android.so" to setOf("gb", "gbc"),
+        "libgearsystem_libretro_android.so" to setOf("gg", "sms"),
+        "libhandy_libretro_android.so" to setOf("lynx"),
+        "libmame2016_libretro_android.so" to setOf("arcade"),
+        "libmednafen_ngp_libretro_android.so" to setOf("ngc", "ngp"),
+        "libmednafen_pce_fast_libretro_android.so" to setOf("pce"),
+        "libmednafen_wswan_libretro_android.so" to setOf("ws", "wsc"),
+        "libmelonds_libretro_android.so" to setOf("nds"),
+        "libmgba_libretro_android.so" to setOf("gba"),
+        "libmupen64plus_next_gles3_libretro_android.so" to setOf("n64"),
+        "libpcsx_rearmed_libretro_android.so" to setOf("psx"),
+        "libplay_libretro_android.so" to setOf("ps2"),
+        "libppsspp_libretro_android.so" to setOf("psp"),
+        "libprosystem_libretro_android.so" to setOf("atari7800"),
+        "libstella_libretro_android.so" to setOf("atari2600"),
+    )
+
+val excludedCoreLibraries =
+    systemsByCoreLibrary
+        .filterValues { systems -> excludedSystems.containsAll(systems) }
+        .keys
+        .map { "**/$it" }
+
 android {
     defaultConfig {
         versionCode = 1
         versionName = "0.1.0"
         applicationId = "com.twocstudio.emulator"
+        buildConfigField("String", "EXCLUDED_SYSTEMS", "\"${excludedSystems.sorted().joinToString(",")}\"")
         ndk {
             // PS2 emulation needs a 64-bit ARM device; we only ship that ABI.
             abiFilters += "arm64-v8a"
@@ -97,6 +138,7 @@ android {
                     "**/libfbneo_libretro_android.so",
                     "**/libmame2003_plus_libretro_android.so",
                 )
+            excludes += excludedCoreLibraries
         }
         resources {
             excludes += setOf("META-INF/DEPENDENCIES", "META-INF/library_release.kotlin_module")

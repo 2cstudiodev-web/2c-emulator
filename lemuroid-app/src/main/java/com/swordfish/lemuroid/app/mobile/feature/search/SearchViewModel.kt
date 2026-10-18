@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.swordfish.lemuroid.common.paging.buildFlowPaging
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
+import com.swordfish.lemuroid.lib.library.pagedWithoutDisabledSystems
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -37,7 +38,7 @@ class SearchViewModel(private val retrogradeDb: RetrogradeDatabase) : ViewModel(
             .flatMapLatest {
                 buildFlowPaging(20, viewModelScope) {
                     retrogradeDb.gameSearchDao().search(it)
-                }
+                }.pagedWithoutDisabledSystems()
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), PagingData.empty())
 
