@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="terms_contact_email" translatable="false">2c.studio.dev@gmail.com</string>
+    <!-- GPLv3: this repository must be public, with the exact source of each release, before publishing. -->
+    <string name="terms_source_url" translatable="false">https://github.com/2cstudiodev-web/2c-emulator</string>
+</resources>

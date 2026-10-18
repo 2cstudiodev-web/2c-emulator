@@ -67,6 +67,12 @@ enum class MainRoute(
         titleId = R.string.title_settings,
         showBottomNavigation = false,
     ),
+    SETTINGS_TERMS(
+        route = "settings/terms",
+        titleId = R.string.settings_title_terms,
+        parent = SETTINGS,
+        showBottomNavigation = false,
+    ),
     SETTINGS_ADVANCED(
         route = "settings/advanced",
         titleId = R.string.settings_title_advanced_settings,

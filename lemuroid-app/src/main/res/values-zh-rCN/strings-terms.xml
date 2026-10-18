@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="terms_title">使用条款</string>
+    <string name="terms_intro">使用 2C Emulator 前请阅读以下条款。点击“同意”即表示您接受这些条款。</string>
+    <string name="terms_s1_title">1. 不含任何游戏</string>
+    <string name="terms_s1_body">2C Emulator 不包含任何游戏、BIOS 文件、固件或加密密钥。您只能使用通过合法途径取得、并有权使用的游戏和系统文件，例如您从自己拥有的游戏和主机中自行备份的文件。</string>
+    <string name="terms_s2_title">2. 禁止盗版和破解</string>
+    <string name="terms_s2_body">您不得使用 2C Emulator 运行、复制或分享盗版游戏，也不得用它绕过复制保护或其他技术保护措施。2C Studio 不提供、不链接、也不协助获取任何游戏文件、BIOS 文件或密钥。</string>
+    <string name="terms_s3_title">3. 商标</string>
+    <string name="terms_s3_body">2C Emulator 是独立项目，与任天堂、索尼、世嘉或任何其他游戏主机厂商均无关联，也未获得其认可或赞助。所有商标归各自所有者所有，仅用于说明兼容的文件格式。</string>
+    <string name="terms_s4_title">4. 开源许可</string>
+    <string name="terms_s4_body">2C Emulator 是依据 GNU 通用公共许可证第 3 版（GPLv3）发布的自由软件，基于 Lemuroid、LibretroDroid 及各 libretro 内核作者的成果开发。本条款不限制您在 GPLv3 或所含组件许可证下的任何权利。源代码：%1$s</string>
+    <string name="terms_s5_title">5. 不提供担保</string>
+    <string name="terms_s5_body">2C Emulator 按“现状”提供，不附带任何形式的担保。在法律允许的最大范围内，2C Studio 不对因使用本软件造成的任何损失负责，包括存档或数据丢失。请自行备份存档。</string>
+    <string name="terms_s6_title">6. 隐私</string>
+    <string name="terms_s6_body">2C Studio 不收集个人数据。您的游戏、存档和设置都保存在您的设备上。为显示封面图，App 会从公开的 libretro 封面服务器下载图片，该服务器可以看到您的 IP 地址和所请求的封面名称。</string>
+    <string name="terms_s7_title">7. 条款变更</string>
+    <string name="terms_s7_body">我们可能会更新本条款。条款变更后，您需要先同意新版本才能继续使用。</string>
+    <string name="terms_s8_title">8. 联系与侵权举报</string>
+    <string name="terms_s8_body">如有疑问或需举报侵权使用，请联系：%1$s</string>
+    <string name="terms_accept">同意</string>
+    <string name="terms_decline">不同意</string>
+    <string name="settings_title_terms">使用条款</string>
+</resources>

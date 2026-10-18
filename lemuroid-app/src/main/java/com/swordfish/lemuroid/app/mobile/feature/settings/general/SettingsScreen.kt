@@ -97,6 +97,10 @@ private fun MiscSettings(
             onClick = { navController.navigateToRoute(MainRoute.SETTINGS_BIOS) },
         )
         LemuroidSettingsMenuLink(
+            title = { Text(text = stringResource(id = R.string.settings_title_terms)) },
+            onClick = { navController.navigateToRoute(MainRoute.SETTINGS_TERMS) },
+        )
+        LemuroidSettingsMenuLink(
             title = { Text(text = stringResource(id = R.string.settings_title_advanced_settings)) },
             subtitle = {
                 Text(text = stringResource(id = R.string.settings_description_advanced_settings))

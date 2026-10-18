@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="terms_title">Terms of Use</string>
+    <string name="terms_intro">Please read these terms before using 2C Emulator. By tapping \"Accept\" you agree to them.</string>
+    <string name="terms_s1_title">1. No games included</string>
+    <string name="terms_s1_body">2C Emulator does not include any games, BIOS files, firmware or encryption keys. You may only use game and system files that you obtained legally and are entitled to use, such as backups you made yourself from games and hardware you own.</string>
+    <string name="terms_s2_title">2. No piracy or circumvention</string>
+    <string name="terms_s2_body">You must not use 2C Emulator to play, copy or share pirated games, or to bypass copy protection or other technical protection measures. 2C Studio does not provide, link to or help you obtain game files, BIOS files or keys.</string>
+    <string name="terms_s3_title">3. Trademarks</string>
+    <string name="terms_s3_body">2C Emulator is an independent project. It is not affiliated with, endorsed or sponsored by Nintendo, Sony, Sega or any other console maker. All trademarks belong to their respective owners and are used only to describe compatible file formats.</string>
+    <string name="terms_s4_title">4. Open-source license</string>
+    <string name="terms_s4_body">2C Emulator is free software licensed under the GNU General Public License version 3. It is built on Lemuroid, LibretroDroid and libretro cores by their respective authors. Nothing in these terms limits your rights under the GPLv3 or under the licenses of the included components. Source code: %1$s</string>
+    <string name="terms_s5_title">5. No warranty</string>
+    <string name="terms_s5_body">2C Emulator is provided \"as is\", without warranty of any kind. To the maximum extent permitted by law, 2C Studio is not liable for any damages arising from its use, including lost saves or data. Keep backups of your saves.</string>
+    <string name="terms_s6_title">6. Privacy</string>
+    <string name="terms_s6_body">2C Studio does not collect personal data. Your games, saves and settings stay on your device. To show cover art, the app downloads images from the public libretro thumbnail server, which can see your IP address and the names of the covers requested.</string>
+    <string name="terms_s7_title">7. Changes</string>
+    <string name="terms_s7_body">We may update these terms. When they change, you will be asked to accept the new version before continuing.</string>
+    <string name="terms_s8_title">8. Contact and infringement reports</string>
+    <string name="terms_s8_body">Questions or reports of infringing use: %1$s</string>
+    <string name="terms_accept">Accept</string>
+    <string name="terms_decline">Decline</string>
+    <string name="settings_title_terms">Terms of use</string>
+</resources>

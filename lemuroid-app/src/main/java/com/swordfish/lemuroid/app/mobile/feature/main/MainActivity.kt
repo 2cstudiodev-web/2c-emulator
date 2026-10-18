@@ -49,6 +49,9 @@ import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSetti
 import com.swordfish.lemuroid.app.mobile.feature.shortcuts.ShortcutsGenerator
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsScreen
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsViewModel
+import com.swordfish.lemuroid.app.mobile.feature.terms.TermsAcceptanceScreen
+import com.swordfish.lemuroid.app.mobile.feature.terms.TermsContent
+import com.swordfish.lemuroid.app.mobile.feature.terms.TermsOfUse
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
 import com.swordfish.lemuroid.app.shared.GameInteractor
 import com.swordfish.lemuroid.app.shared.game.BaseGameActivity
@@ -63,9 +66,9 @@ import com.swordfish.lemuroid.lib.android.RetrogradeComponentActivity
 import com.swordfish.lemuroid.lib.bios.BiosManager
 import com.swordfish.lemuroid.lib.core.CoresSelection
 import com.swordfish.lemuroid.lib.injection.PerActivity
-import com.swordfish.lemuroid.lib.library.covers.CustomCoverManager
 import com.swordfish.lemuroid.lib.library.MetaSystemID
 import com.swordfish.lemuroid.lib.library.SystemID
+import com.swordfish.lemuroid.lib.library.covers.CustomCoverManager
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 import com.swordfish.lemuroid.lib.preferences.SharedPreferencesHelper
@@ -121,8 +124,21 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
         }
 
         setContent {
-            val navController = rememberNavController()
-            MainScreen(navController)
+            val termsAccepted = remember { mutableStateOf(TermsOfUse.isAccepted(applicationContext)) }
+            if (termsAccepted.value) {
+                val navController = rememberNavController()
+                MainScreen(navController)
+            } else {
+                AppTheme {
+                    TermsAcceptanceScreen(
+                        onAccept = {
+                            TermsOfUse.accept(applicationContext)
+                            termsAccepted.value = true
+                        },
+                        onDecline = { finish() },
+                    )
+                }
+            }
         }
     }
 
@@ -281,6 +297,9 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                 ),
                             navController = navController,
                         )
+                    }
+                    composable(MainRoute.SETTINGS_TERMS) {
+                        TermsContent(modifier = Modifier.padding(padding))
                     }
                     composable(MainRoute.SETTINGS_ADVANCED) {
                         AdvancedSettingsScreen(
