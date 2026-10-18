@@ -66,6 +66,12 @@ object SerialScanner {
 
     private const val PS_SERIAL_MAX_SIZE = 12
 
+    /**
+     * The PSP SDK's default PARAM.SFO DISC_ID. Most homebrew keeps it, so trusting it would name every
+     * such EBOOT after the commercial game that owns the serial (LocoRoco). Those fall back to the file name.
+     */
+    private val HOMEBREW_PLACEHOLDER_SERIALS = setOf("UCJS-10041")
+
     private const val ISO_VOLUME_SPACE_SIZE_OFFSET = 0x8050
 
     // An 80 minute CD holds 360,000 sectors; leave some margin for overburned discs.
@@ -247,6 +253,7 @@ object SerialScanner {
 
         return textSearch(queries, openedStream, PS_SERIAL_MAX_SIZE, headerSize)
             .mapNotNull { serial -> parsePSXSerial(serial) }
+            .filterNot { serial -> serial in HOMEBREW_PLACEHOLDER_SERIALS }
             .mapNotNull { serial ->
                 when {
                     serial.startsWithAny(PSX_BASE_SERIALS) -> DiskInfo(serial, SystemID.PSX)
