@@ -1,0 +1,22 @@
+nes|Nintendo|15
+snes|Super Nintendo|15
+gb|Game Boy|15
+gbc|Game Boy Color|15
+gba|Game Boy Advance|15
+nds|Nintendo DS|20
+n64|Nintendo 64|20
+3ds|Nintendo 3DS (Beta)|30
+atari2600|Atari 2600|12
+atari7800|Atari 7800|12
+lynx|Atari Lynx|12
+ngp,ngc|Neo Geo Pocket|12
+ws,wsc|WonderSwan|12
+arcade|Arcade|15
+md|Sega Genesis|15
+sms|Sega Master System|15
+gg|Game Gear|15
+pce|PCEngine|15
+psx|PlayStation|25
+psp|PlayStation Portable|30
+ps2|PlayStation 2 (Beta)|40
+dos|DOS (Beta)|25
