@@ -19,6 +19,14 @@ android {
         }
     }
 
+    ndkVersion = "27.0.12077973"
+    externalNativeBuild {
+        // Small JNI bridge for cores that need the JavaVM (see src/main/cpp/core_bridge.cpp).
+        ndkBuild {
+            path = file("src/main/cpp/Android.mk")
+        }
+    }
+
     sourceSets {
         // Extra cores downloaded by extra-cores/fetch-cores.sh
         getByName("main").jniLibs.srcDir("$rootDir/extra-cores/jniLibs")

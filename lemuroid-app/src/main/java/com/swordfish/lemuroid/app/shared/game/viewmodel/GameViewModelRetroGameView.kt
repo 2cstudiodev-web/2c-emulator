@@ -2,6 +2,7 @@ package com.swordfish.lemuroid.app.shared.game.viewmodel
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.system.Os
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -9,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.swordfish.lemuroid.BuildConfig
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.feature.settings.SettingsManager
+import com.swordfish.lemuroid.app.shared.game.CoreBridge
 import com.swordfish.lemuroid.app.shared.game.ShaderChooser
 import com.swordfish.lemuroid.app.shared.rumble.RumbleManager
 import com.swordfish.lemuroid.app.shared.settings.HDModeQuality
@@ -20,6 +22,7 @@ import com.swordfish.lemuroid.lib.core.CoreVariablesManager
 import com.swordfish.lemuroid.lib.game.GameLoader
 import com.swordfish.lemuroid.lib.game.GameLoaderError
 import com.swordfish.lemuroid.lib.game.GameLoaderException
+import com.swordfish.lemuroid.lib.library.CoreID
 import com.swordfish.lemuroid.lib.library.GameSystem
 import com.swordfish.lemuroid.lib.library.SystemCoreConfig
 import com.swordfish.lemuroid.lib.library.db.entity.Game
@@ -217,6 +220,13 @@ class GameViewModelRetroGameView(
         requestMicrophone: Boolean,
         enableImmersiveMode: Boolean,
     ): GLRetroViewData {
+        if (systemCoreConfig.coreID == CoreID.PLAY) {
+            redirectPlayDataDirectory(gameData.savesDirectory.absolutePath)
+            if (!CoreBridge.preparePlayCore(gameData.coreLibrary)) {
+                Timber.e("Play! core could not be given the JavaVM; it will likely crash")
+            }
+        }
+
         return GLRetroViewData(appContext).apply {
             coreFilePath = gameData.coreLibrary
 
@@ -254,6 +264,16 @@ class GameViewModelRetroGameView(
             enableMicrophone = requestMicrophone
             immersiveMode = buildImmersiveModeConfiguration(enableImmersiveMode)
         }
+    }
+
+    /**
+     * Play! on Android stores "Play Data Files" (memory cards, config) under getenv("EXTERNAL_STORAGE"),
+     * which is /sdcard and not writable under scoped storage, so the core aborts on startup.
+     * Games run in their own process, so pointing the variable at the app's saves directory is safe.
+     */
+    private fun redirectPlayDataDirectory(path: String) {
+        runCatching { Os.setenv("EXTERNAL_STORAGE", path, true) }
+            .onFailure { Timber.e(it, "Unable to redirect Play! data directory") }
     }
 
     private fun buildImmersiveModeConfiguration(enableImmersiveMode: Boolean): ImmersiveMode? {

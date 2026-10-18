@@ -561,7 +561,9 @@ data class GameSystem(
                                     1 to arrayListOf(ControllerConfigs.PSX_DUALSHOCK),
                                 ),
                             statesSupported = false,
-                            useFileDescriptorPath = true,
+                            // Play! re-opens the path it is given, and scoped storage denies re-opening
+                            // a /proc/self/fd link to a SAF document, so the disc is copied instead.
+                            useFileDescriptorPath = false,
                             supportedOnlyArchitectures = setOf("arm64-v8a"),
                         ),
                     ),
